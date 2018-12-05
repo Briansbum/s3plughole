@@ -14,7 +14,9 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 )
 
-type retryS3 func(s3.DeleteObjectsInput) (*s3.DeleteObjectsOutput, error)
+type stop struct {
+	error
+}
 
 func main() {
 	start := time.Now()
@@ -89,10 +91,6 @@ func main() {
 	fmt.Printf("time to delete %v objects: %v\n", len(keys)*1000, time.Since(start))
 }
 
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
-
 func retry(attempts int, sleep time.Duration, f func() error) error {
 	if err := f(); err != nil {
 		if s, ok := err.(stop); ok {
@@ -112,8 +110,4 @@ func retry(attempts int, sleep time.Duration, f func() error) error {
 	}
 
 	return nil
-}
-
-type stop struct {
-	error
 }
