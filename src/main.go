@@ -18,11 +18,8 @@ type retryS3 func(s3.DeleteObjectsInput) (*s3.DeleteObjectsOutput, error)
 
 func main() {
 	start := time.Now()
-	bucket := aws.String(os.Args[1])
-	svc := s3.New(session.Must(session.NewSession(&aws.Config{
-		Region: aws.String("us-east-1"),
-	}),
-	))
+	bucket := aws.String(os.Args[2])
+	svc := s3.New(session.Must(session.NewSession(&aws.Config{Region: aws.String(os.Args[1])})))
 
 	input := &s3.ListObjectsV2Input{
 		Bucket:  bucket,
